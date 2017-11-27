@@ -1,5 +1,7 @@
 from random import shuffle
 import argparse
+import output_validator
+import math
 # in20_0 = open("inputs20/input20_0.in", "r")
 # wizNum = int(in20_0.readline())
 # conNum = int(in20_0.readline())
@@ -23,6 +25,39 @@ import argparse
 ======================================================================
 """
 
+def acceptanceProbability(energy, newEnergy, temperature):
+	if (newEnergy < energy):
+		return 1
+	else:
+		return math.exp((energy - newEnergy) / temperature)
+
+def energy(wizards, constraints, num_constraints):
+	"""
+	Input:
+		wizards: An ordering of the wizards that is an attempt at a solution
+		constraints: A 2D-array of constraints
+	Output: 
+
+	"""
+	output_ordering = wizards
+	output_ordering_set = set(output_ordering)
+	output_ordering_map = {k: v for v,k in enumerate(output_ordering)}
+	constraints_failed = []
+	constraints_satisfied = 0
+	
+	for i in range(num_constraints):
+		constraint = constraints[i]
+		wizA = output_ordering_map[constraint[0]]
+		wizB = output_ordering_map[constraint[1]]
+		wizC = output_ordering_map[constraint[2]]
+		if (wizA < wizC < wizB) or (wizB < wizC < wizA):
+			constraints_failed.append(c)
+		else:
+			constraints_satisfied += 1
+
+	return constraints_satisfied, constraints_failed
+
+
 def solve(num_wizards, num_constraints, wizards, constraints):
     """
     Write your algorithm here.
@@ -36,6 +71,12 @@ def solve(num_wizards, num_constraints, wizards, constraints):
     Output:
         An array of wizard names in the ordering your algorithm returns
     """
+    base = shuffle(wizards)
+    constraints_satisfied = 0
+    constraints_failed = []
+    for i in range(num_constraints):
+
+
     return []
 
 """
