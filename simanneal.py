@@ -1,7 +1,10 @@
 from random import shuffle
+from random import randint
+from random import random
 import argparse
 import output_validator
 import math
+
 # in20_0 = open("inputs20/input20_0.in", "r")
 # wizNum = int(in20_0.readline())
 # conNum = int(in20_0.readline())
@@ -44,7 +47,7 @@ def energy(wizards, constraints, num_constraints):
 	output_ordering_map = {k: v for v,k in enumerate(output_ordering)}
 	constraints_failed = []
 	constraints_satisfied = 0
-	
+
 	for i in range(num_constraints):
 		constraint = constraints[i]
 		wizA = output_ordering_map[constraint[0]]
@@ -55,7 +58,7 @@ def energy(wizards, constraints, num_constraints):
 		else:
 			constraints_satisfied += 1
 
-	return constraints_satisfied, constraints_failed
+	return constraints_satisfied
 
 
 def solve(num_wizards, num_constraints, wizards, constraints):
@@ -71,10 +74,39 @@ def solve(num_wizards, num_constraints, wizards, constraints):
     Output:
         An array of wizard names in the ordering your algorithm returns
     """
+ #    output_ordering = wizards
+	# output_ordering_set = set(output_ordering)
+	# output_ordering_map = {k: v for v,k in enumerate(output_ordering)}
+    temperature = 10000
+    cooling_rate = 0.003
     base = shuffle(wizards)
-    constraints_satisfied = 0
-    constraints_failed = []
-    for i in range(num_constraints):
+    best = base
+    bestEnergy = energy(best, constraints, num_constraints)
+   	while (temperature > 1):
+	    currentEnergy = energy(base, constraints, num_constraints)
+	    randWiz1, randWiz2 = 0, 0
+	    while (randWiz1 == randWiz2):
+		    randWiz1 = random.randint(0, num_wizards)
+		    randWiz2 = random.randint(0, num_wizards)
+		wizard1 = wizards[randWiz1]
+		wizard2 = wizards[randWiz2]
+
+		newSolution = base
+		newSolution[randWiz1] = wizard2
+		newSolution[randWiz2] = wizard1
+		newEnergy = energy(newSolution, constraints, num_constraints)
+
+		prob = acceptanceProbability(currentEnergy, newEnergy, temperature)
+		if (prob > random.random()):
+			base = newSolution
+			currentEnergy = newEnergy
+		if (currentEnergy > best):
+			best = base 
+			bestEnergy = currentEnergy
+		temp *= 1 - cooling_rate
+
+
+    
 
 
     return []
