@@ -82,7 +82,10 @@ def solve(num_wizards, num_constraints, wizards, constraints):
     base = shuffle(wizards)
     best = base
     bestEnergy = energy(best, constraints, num_constraints)
+    
    	while (temperature > 1):
+   		if (currentEnergy == num_constraints):
+   			return base
 	    currentEnergy = energy(base, constraints, num_constraints)
 	    randWiz1, randWiz2 = 0, 0
 	    while (randWiz1 == randWiz2):
@@ -104,10 +107,6 @@ def solve(num_wizards, num_constraints, wizards, constraints):
 			best = base 
 			bestEnergy = currentEnergy
 		temp *= 1 - cooling_rate
-
-
-    
-
 
     return []
 
