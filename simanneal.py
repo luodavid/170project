@@ -92,7 +92,7 @@ def solve(num_wizards, num_constraints, wizards, constraints):
     # output_ordering_set = set(output_ordering)
     # output_ordering_map = {k: v for v,k in enumerate(output_ordering)}
     temperature = 10000
-    cooling_rate = 0.003
+    cooling_rate = 100
     shuffle(wizards)
     base = wizards
     best = base
@@ -123,7 +123,8 @@ def solve(num_wizards, num_constraints, wizards, constraints):
         while (randWiz1 == randWiz2):
             randWiz1 = random.randint(0, num_wizards)
             randWiz2 = random.randint(0, num_wizards)
-
+            randWiz1 = randint(0, num_wizards-1)
+            randWiz2 = randint(0, num_wizards-1)
         wizard1 = wizards[randWiz1]
         wizard2 = wizards[randWiz2]
 
@@ -133,16 +134,15 @@ def solve(num_wizards, num_constraints, wizards, constraints):
         newEnergy = energy(newSolution, constraints, num_constraints)
 
         prob = acceptanceProbability(currentEnergy, newEnergy, temperature)
-        if (prob > random.random()):
+        if (prob > random()):
+            print("Acceptance probability is higher than the RNG.")
             base = newSolution
             currentEnergy = newEnergy
         if (currentEnergy > best):
             best = base 
             bestEnergy = currentEnergy
-        temp *= 1 - cooling_rate
-
-
-    return []
+        temperature *= 1 - cooling_rate
+    return best
 
 """
 ======================================================================
