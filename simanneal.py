@@ -13,10 +13,10 @@ import math
 # nameSet = set()
 # names = in20_0.readlines()
 # for line in names:
-# 	lists = line.split(' ')
-# 	nameSet.add(lists[0])
-# 	nameSet.add(lists[1])
-# 	nameSet.add(lists[2])
+#   lists = line.split(' ')
+#   nameSet.add(lists[0])
+#   nameSet.add(lists[1])
+#   nameSet.add(lists[2])
 
 # firstChoose = list(nameSet)
 # shuffle(firstChoose)
@@ -29,36 +29,35 @@ import math
 """
 
 def acceptanceProbability(energy, newEnergy, temperature):
-	if (newEnergy < energy):
-		return 1
-	else:
-		return math.exp((energy - newEnergy) / temperature)
+    if (newEnergy < energy):
+        return 1
+    else:
+        return math.exp((energy - newEnergy) / temperature)
 
 def energy(wizards, constraints, num_constraints):
-	"""
-	Input:
-		wizards: An ordering of the wizards that is an attempt at a solution
-		constraints: A 2D-array of constraints
-	Output: 
+    """
+    Input:
+        wizards: An ordering of the wizards that is an attempt at a solution
+        constraints: A 2D-array of constraints
+    Output: 
 
-	"""
-	output_ordering = wizards
-	output_ordering_set = set(output_ordering)
-	output_ordering_map = {k: v for v,k in enumerate(output_ordering)}
-	constraints_failed = []
-	constraints_satisfied = 0
+    """
+    output_ordering_set = wizards
+    output_ordering_map = {k: v for v,k in enumerate(output_ordering_set)}
+    constraints_failed = []
+    constraints_satisfied = 0
 
-	for i in range(num_constraints):
-		constraint = constraints[i]
-		wizA = output_ordering_map[constraint[0]]
-		wizB = output_ordering_map[constraint[1]]
-		wizC = output_ordering_map[constraint[2]]
-		if (wizA < wizC < wizB) or (wizB < wizC < wizA):
-			constraints_failed.append(c)
-		else:
-			constraints_satisfied += 1
+    for i in range(num_constraints):
+        constraint = constraints[i]
+        wizA = output_ordering_map[constraint[0]]
+        wizB = output_ordering_map[constraint[1]]
+        wizC = output_ordering_map[constraint[2]]
+        if (wizA < wizC < wizB) or (wizB < wizC < wizA):
+            constraints_failed.append(constraint)
+        else:
+            constraints_satisfied += 1
 
-	return constraints_satisfied
+    return constraints_satisfied
 
 
 def solve(num_wizards, num_constraints, wizards, constraints):
@@ -75,40 +74,41 @@ def solve(num_wizards, num_constraints, wizards, constraints):
         An array of wizard names in the ordering your algorithm returns
     """
  #    output_ordering = wizards
-	# output_ordering_set = set(output_ordering)
-	# output_ordering_map = {k: v for v,k in enumerate(output_ordering)}
+    # output_ordering_set = set(output_ordering)
+    # output_ordering_map = {k: v for v,k in enumerate(output_ordering)}
     temperature = 10000
     cooling_rate = 0.003
-    base = shuffle(wizards)
+    shuffle(wizards)
+    base = wizards
     best = base
     bestEnergy = energy(best, constraints, num_constraints)
     
-   	while (temperature > 1):
-   		if (currentEnergy == num_constraints):
-   			return base
-	    currentEnergy = energy(base, constraints, num_constraints)
-	    randWiz1, randWiz2 = 0, 0
-	    while (randWiz1 == randWiz2):
-		    randWiz1 = random.randint(0, num_wizards)
-		    randWiz2 = random.randint(0, num_wizards)
-		wizard1 = wizards[randWiz1]
-		wizard2 = wizards[randWiz2]
+    while (temperature > 1):
+        currentEnergy = energy(base, constraints, num_constraints)
+        if (currentEnergy == num_constraints):
+            return base
+        randWiz1, randWiz2 = 0, 0
+        while (randWiz1 == randWiz2):
+            randWiz1 = random.randint(0, num_wizards)
+            randWiz2 = random.randint(0, num_wizards)
+        wizard1 = wizards[randWiz1]
+        wizard2 = wizards[randWiz2]
 
-		newSolution = base
-		newSolution[randWiz1] = wizard2
-		newSolution[randWiz2] = wizard1
-		newEnergy = energy(newSolution, constraints, num_constraints)
+        newSolution = base
+        newSolution[randWiz1] = wizard2
+        newSolution[randWiz2] = wizard1
+        newEnergy = energy(newSolution, constraints, num_constraints)
 
-		prob = acceptanceProbability(currentEnergy, newEnergy, temperature)
-		if (prob > random.random()):
-			base = newSolution
-			currentEnergy = newEnergy
-		if (currentEnergy > best):
-			best = base 
-			bestEnergy = currentEnergy
-		temp *= 1 - cooling_rate
+        prob = acceptanceProbability(currentEnergy, newEnergy, temperature)
+        if (prob > random.random()):
+            base = newSolution
+            currentEnergy = newEnergy
+        if (currentEnergy > best):
+            best = base 
+            bestEnergy = currentEnergy
+        temp *= 1 - cooling_rate
 
-    return []
+    return base
 
 """
 ======================================================================
