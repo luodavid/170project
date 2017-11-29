@@ -49,6 +49,8 @@ def energy(wizards, constraints, num_constraints):
     
     output_ordering_map = {k: v for v,k in enumerate(output_ordering)}
 
+    output_ordering_set = wizards
+    output_ordering_map = {k: v for v,k in enumerate(output_ordering_set)}
     constraints_failed = []
     constraints_satisfied = 0
 
@@ -86,6 +88,14 @@ def solve(num_wizards, num_constraints, wizards, constraints):
     cooling_rate = 0.003
     shuffle(wizards)
     best = wizards
+ #    output_ordering = wizards
+    # output_ordering_set = set(output_ordering)
+    # output_ordering_map = {k: v for v,k in enumerate(output_ordering)}
+    temperature = 10000
+    cooling_rate = 0.003
+    shuffle(wizards)
+    base = wizards
+    best = base
     bestEnergy = energy(best, constraints, num_constraints)
 
     #Added
@@ -106,6 +116,14 @@ def solve(num_wizards, num_constraints, wizards, constraints):
             randWiz1 = random.randint(0, num_wizards)
             randWiz2 = random.randint(0, num_wizards)
         
+        currentEnergy = energy(base, constraints, num_constraints)
+        if (currentEnergy == num_constraints):
+            return base
+        randWiz1, randWiz2 = 0, 0
+        while (randWiz1 == randWiz2):
+            randWiz1 = random.randint(0, num_wizards)
+            randWiz2 = random.randint(0, num_wizards)
+
         wizard1 = wizards[randWiz1]
         wizard2 = wizards[randWiz2]
 
@@ -122,6 +140,7 @@ def solve(num_wizards, num_constraints, wizards, constraints):
             best = base 
             bestEnergy = currentEnergy
         temp *= 1 - cooling_rate
+
 
     return []
 
