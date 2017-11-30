@@ -14,7 +14,7 @@ def processInput(input_file, output_file):
     fout = open(output_file, "r")
 
     num_wiz_in_input = int(fin.readline().split()[0])
-    input_wizard_set = set(fin.readline().split())
+    # input_wizard_set = set(fin.readline().split())
     num_constraints = int(fin.readline().split()[0])
 
     output_ordering = fout.readline().split()
@@ -28,8 +28,8 @@ def processInput(input_file, output_file):
     if (len(output_ordering_set) != len(output_ordering)):
         return "The output ordering contains repeated wizards."
 
-    if (input_wizard_set != output_ordering_set):
-        return "The output ordering contains wizards that are different from the ones in the input ordering."
+    # if (input_wizard_set != output_ordering_set):
+    #     return "The output ordering contains wizards that are different from the ones in the input ordering."
 
     # Counts how many constraints are satisfied.
     constraints_satisfied = 0
