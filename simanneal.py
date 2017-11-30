@@ -1,6 +1,7 @@
 from random import shuffle
 from random import randint
 from random import random
+from random import choice
 import argparse
 import output_validator
 import math
@@ -43,7 +44,7 @@ def energy(wizards, constraints, num_constraints):
 
     """
     output_ordering_set = wizards
-    output_ordering_map = {k: v for v,k in enumerate(output_ordering_set)}
+    output_ordering_map = {k: v for v, k in enumerate(output_ordering_set)}
     constraints_failed = []
     constraints_satisfied = 0
 
@@ -76,39 +77,42 @@ def solve(num_wizards, num_constraints, wizards, constraints):
  #    output_ordering = wizards
     # output_ordering_set = set(output_ordering)
     # output_ordering_map = {k: v for v,k in enumerate(output_ordering)}
-    temperature = 100000
-    cooling_rate = 100
+    temperature = 1000
+    alpha = 0.99
     shuffle(wizards)
     base = wizards
     best = base
     bestEnergy = energy(best, constraints, num_constraints)
-    
+    wizard1, wizard2 = "", ""
+    randWiz1, randWiz2 = 0, 0
     while (temperature > 1):
         currentEnergy = energy(base, constraints, num_constraints)
         if (currentEnergy == num_constraints):
             return base
-        randWiz1, randWiz2 = 0, 0
-        while (randWiz1 == randWiz2):
-            randWiz1 = randint(0, num_wizards-1)
-            randWiz2 = randint(0, num_wizards-1)
-        wizard1 = wizards[randWiz1]
-        wizard2 = wizards[randWiz2]
+        while (wizard1 != wizard2):
+            wizard1 = choice(base)
+            wizard2 = choice(base)
+            randWiz1 = base.index(wizard1)
+            randWiz2 = base.index(wizard2)
+        # print(wizard1, wizard2)
 
-        newSolution = base
-        print(newSolution)
+        newSolution = list(base)
+        # print('\n'.join('{}: {}'.format(*k) for k in enumerate(base)))
+        # print('\n'.join('{}: {}'.format(*k) for k in enumerate(newSolution)))
+        # print(newSolution)
         newSolution[randWiz1] = wizard2
         newSolution[randWiz2] = wizard1
         newEnergy = energy(newSolution, constraints, num_constraints)
         prob = acceptanceProbability(currentEnergy, newEnergy, temperature)
         if (prob > random()):
-            print("Acceptance probability is higher than the RNG.")
+            # print("Acceptance probability is higher than the RNG.")
             base = newSolution
             currentEnergy = newEnergy
         if (currentEnergy > best):
-            print("Found a better local optimum.")
+            # print("Found a better local optimum.")
             best = base
             bestEnergy = currentEnergy
-        temperature *= 1 - cooling_rate
+        temperature = temperature * alpha
     print(bestEnergy)
     return best
 
