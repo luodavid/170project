@@ -1,10 +1,4 @@
-from random import shuffle
-from random import randint
-from random import random
-from random import choice
-import argparse
-import output_validator
-import math
+
 
 # in20_0 = open("inputs20/input20_0.in", "r")
 # wizNum = int(in20_0.readline())
@@ -14,52 +8,21 @@ import math
 # nameSet = set()
 # names = in20_0.readlines()
 # for line in names:
-#   lists = line.split(' ')
-#   nameSet.add(lists[0])
-#   nameSet.add(lists[1])
-#   nameSet.add(lists[2])
+# 	lists = line.split(' ')
+# 	nameSet.add(lists[0])
+# 	nameSet.add(lists[1])
+# 	nameSet.add(lists[2])
 
 # firstChoose = list(nameSet)
 # shuffle(firstChoose)
-
+from random import shuffle
+import argparse
 
 """
 ======================================================================
   Complete the following function.
 ======================================================================
 """
-
-def acceptanceProbability(energy, newEnergy, temperature):
-    if (newEnergy < energy):
-        return 1
-    else:
-        return math.exp((energy - newEnergy) / temperature)
-
-def energy(wizards, constraints, num_constraints):
-    """
-    Input:
-        wizards: An ordering of the wizards that is an attempt at a solution
-        constraints: A 2D-array of constraints
-    Output: 
-
-    """
-    output_ordering_set = wizards
-    output_ordering_map = {k: v for v, k in enumerate(output_ordering_set)}
-    constraints_failed = []
-    constraints_satisfied = 0
-
-    for i in range(num_constraints):
-        constraint = constraints[i]
-        wizA = output_ordering_map[constraint[0]]
-        wizB = output_ordering_map[constraint[1]]
-        wizC = output_ordering_map[constraint[2]]
-        if (wizA < wizC < wizB) or (wizB < wizC < wizA):
-            constraints_failed.append(constraint)
-        else:
-            constraints_satisfied += 1
-
-    return constraints_satisfied
-
 
 def solve(num_wizards, num_constraints, wizards, constraints):
     """
@@ -74,47 +37,7 @@ def solve(num_wizards, num_constraints, wizards, constraints):
     Output:
         An array of wizard names in the ordering your algorithm returns
     """
- #    output_ordering = wizards
-    # output_ordering_set = set(output_ordering)
-    # output_ordering_map = {k: v for v,k in enumerate(output_ordering)}
-    temperature = 1000
-    alpha = 0.99
-    shuffle(wizards)
-    base = wizards
-    best = base
-    bestEnergy = energy(best, constraints, num_constraints)
-    wizard1, wizard2 = "", ""
-    randWiz1, randWiz2 = 0, 0
-    while (temperature > 1):
-        currentEnergy = energy(base, constraints, num_constraints)
-        if (currentEnergy == num_constraints):
-            return base
-        while (wizard1 != wizard2):
-            wizard1 = choice(base)
-            wizard2 = choice(base)
-            randWiz1 = base.index(wizard1)
-            randWiz2 = base.index(wizard2)
-        # print(wizard1, wizard2)
-
-        newSolution = list(base)
-        # print('\n'.join('{}: {}'.format(*k) for k in enumerate(base)))
-        # print('\n'.join('{}: {}'.format(*k) for k in enumerate(newSolution)))
-        # print(newSolution)
-        newSolution[randWiz1] = wizard2
-        newSolution[randWiz2] = wizard1
-        newEnergy = energy(newSolution, constraints, num_constraints)
-        prob = acceptanceProbability(currentEnergy, newEnergy, temperature)
-        if (prob > random()):
-            # print("Acceptance probability is higher than the RNG.")
-            base = newSolution
-            currentEnergy = newEnergy
-        if (currentEnergy > best):
-            # print("Found a better local optimum.")
-            best = base
-            bestEnergy = currentEnergy
-        temperature = temperature * alpha
-    print(bestEnergy)
-    return best
+    return []
 
 """
 ======================================================================
