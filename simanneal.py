@@ -1,9 +1,4 @@
-from random import shuffle
-from random import randint
-from random import random
-import argparse
-import output_validator
-import math
+
 
 # in20_0 = open("inputs20/input20_0.in", "r")
 # wizNum = int(in20_0.readline())
@@ -13,52 +8,21 @@ import math
 # nameSet = set()
 # names = in20_0.readlines()
 # for line in names:
-#   lists = line.split(' ')
-#   nameSet.add(lists[0])
-#   nameSet.add(lists[1])
-#   nameSet.add(lists[2])
+# 	lists = line.split(' ')
+# 	nameSet.add(lists[0])
+# 	nameSet.add(lists[1])
+# 	nameSet.add(lists[2])
 
 # firstChoose = list(nameSet)
 # shuffle(firstChoose)
-
+from random import shuffle
+import argparse
 
 """
 ======================================================================
   Complete the following function.
 ======================================================================
 """
-
-def acceptanceProbability(energy, newEnergy, temperature):
-    if (newEnergy < energy):
-        return 1
-    else:
-        return math.exp((energy - newEnergy) / temperature)
-
-def energy(wizards, constraints, num_constraints):
-    """
-    Input:
-        wizards: An ordering of the wizards that is an attempt at a solution
-        constraints: A 2D-array of constraints
-    Output: 
-
-    """
-    output_ordering_set = wizards
-    output_ordering_map = {k: v for v,k in enumerate(output_ordering_set)}
-    constraints_failed = []
-    constraints_satisfied = 0
-
-    for i in range(num_constraints):
-        constraint = constraints[i]
-        wizA = output_ordering_map[constraint[0]]
-        wizB = output_ordering_map[constraint[1]]
-        wizC = output_ordering_map[constraint[2]]
-        if (wizA < wizC < wizB) or (wizB < wizC < wizA):
-            constraints_failed.append(constraint)
-        else:
-            constraints_satisfied += 1
-
-    return constraints_satisfied
-
 
 def solve(num_wizards, num_constraints, wizards, constraints):
     """
@@ -73,43 +37,7 @@ def solve(num_wizards, num_constraints, wizards, constraints):
     Output:
         An array of wizard names in the ordering your algorithm returns
     """
- #    output_ordering = wizards
-    # output_ordering_set = set(output_ordering)
-    # output_ordering_map = {k: v for v,k in enumerate(output_ordering)}
-    temperature = 10000
-    cooling_rate = 50
-    shuffle(wizards)
-    base = wizards
-    best = base
-    bestEnergy = energy(best, constraints, num_constraints)
-    
-    while (temperature > 1):
-        currentEnergy = energy(base, constraints, num_constraints)
-        if (currentEnergy == num_constraints):
-            return base
-        randWiz1, randWiz2 = 0, 0
-        while (randWiz1 == randWiz2):
-            randWiz1 = randint(0, num_wizards-1)
-            randWiz2 = randint(0, num_wizards-1)
-        wizard1 = wizards[randWiz1]
-        wizard2 = wizards[randWiz2]
-
-        newSolution = base
-        newSolution[randWiz1] = wizard2
-        newSolution[randWiz2] = wizard1
-        newEnergy = energy(newSolution, constraints, num_constraints)
-
-        prob = acceptanceProbability(currentEnergy, newEnergy, temperature)
-        if (prob > random()):
-            print("Acceptance probability is higher than the RNG.")
-            base = newSolution
-            currentEnergy = newEnergy
-        if (currentEnergy > best):
-            best = base 
-            bestEnergy = currentEnergy
-        temperature *= 1 - cooling_rate
-
-    return best
+    return []
 
 """
 ======================================================================
@@ -143,6 +71,24 @@ if __name__=="__main__":
     parser.add_argument("output_file", type=str, help = "___.out")
     args = parser.parse_args()
 
+in20_0 = open("inputs/inputs20/input20_0.in", "r")
+wizNum = int(in20_0.readline())
+conNum = int(in20_0.readline())
+print wizNum
+print conNum
+nameSet = set()
+names = in20_0.readlines()
+
+for line in names:
+	lists = line.split(' ')
+	nameSet.add(lists[0])
+	nameSet.add(lists[1])
+	nameSet.add(lists[2])
+	if len(nameSet) == wizNum:
+		break
+
+firstChoose = list(nameSet)
+shuffle(firstChoose)
     num_wizards, num_constraints, wizards, constraints = read_input(args.input_file)
     solution = solve(num_wizards, num_constraints, wizards, constraints)
     write_output(args.output_file, solution)

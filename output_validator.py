@@ -29,7 +29,7 @@ def processInput(input_file, output_file):
         return "The output ordering contains repeated wizards."
 
     # if (input_wizard_set != output_ordering_set):
-    #     return "The output ordering contains wizards that are different from the ones in the input ordering."
+       # return "The output ordering contains wizards that are different from the ones in the input ordering."
 
     # Counts how many constraints are satisfied.
     constraints_satisfied = 0
