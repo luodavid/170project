@@ -6,8 +6,8 @@ def main(argv):
     if len(argv) != 2:
         print("Usage: python output_validator.py [path_to_input_file] [path_to_output_file]")
         return
-    constraints_satisfied, num_constraints, constraints_failed = processInput(argv[0], argv[1])
-    print("You satisfied {}/{} constraints. List of failed constraints: {}".format(constraints_satisfied, num_constraints, constraints_failed))
+    print processInput(argv[0], argv[1])
+    # print("You satisfied {}/{} constraints. List of failed constraints: {}".format(constraints_satisfied, num_constraints, constraints_failed))
 
 def processInput(input_file, output_file):
     fin = open(input_file, "r")
@@ -29,7 +29,7 @@ def processInput(input_file, output_file):
         return "The output ordering contains repeated wizards."
 
     # if (input_wizard_set != output_ordering_set):
-       # return "The output ordering contains wizards that are different from the ones in the input ordering."
+    #     return "The output ordering contains wizards that are different from the ones in the input ordering."
 
     # Counts how many constraints are satisfied.
     constraints_satisfied = 0
