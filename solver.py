@@ -10,30 +10,12 @@ from random import shuffle, sample, random
 conWiz = {}
 
 def acceptance_probability(energy, newEnergy, temperature):
-    """
-    Input:
-        energy:
-        newEnergy:
-        temperature:
-    Output:
-
-    """
     if (newEnergy < energy):
         return 1
     else:
         return math.exp((energy - newEnergy) / temperature)
 
-
 def oneWizCost(num_wiz_in_input, wizards, wizard, solution):
-    """
-    Input:
-        num_wiz_in_input: The number of wizards provided in the inpput file
-        wizards: A list of strings that represent each wizard name
-        wizard: 
-        solution: An ordering of the wizards that represents an instance of the solution to constraints
-    Output:
-        The number of constraints left to be satisfied derived from an instance of the solution
-    """
     output_ordering = solution
     output_ordering_set = set(output_ordering)
     output_ordering_map = {k: v for v, k in enumerate(output_ordering)}
@@ -62,16 +44,8 @@ def oneWizCost(num_wiz_in_input, wizards, wizard, solution):
 
     return num_constraints - constraints_satisfied
 
+
 def cost(num_wiz_in_input, num_constraints, wizards, constraints):
-    """
-    Input:
-        num_wiz_in_input: The number of wizards provided in the inpput file
-        num_constraints: The number of constraints on the wizards
-        wizards: A list of strings that represent each wizard's name
-        constraints: A 2D array of strings in the format [["A", "B", "C"]] such that C must fall between A and B
-    Output:
-        The number of constraints left to be satisfied derived from an instance of the solution
-    """
     output_ordering = wizards
     output_ordering_set = set(output_ordering)
     output_ordering_map = {k: v for v, k in enumerate(output_ordering)}
@@ -102,21 +76,13 @@ def cost(num_wiz_in_input, num_constraints, wizards, constraints):
 
     return num_constraints - constraints_satisfied
 
-
-
 def neighbor(wizards):
-    """
-    Inputs:
-        wizards: A list of strings that represent each wizard's name
-    Output:
-
-    """
     index1 = sample(range(len(wizards)), 1)[0]
     randWizard = wizards[index1]
     newWiz = wizards[:index1] + wizards[index1 + 1:]
     newWiz.insert(sample(range(len(wizards)), 1)[0], randWizard)
     return newWiz, randWizard
-
+    
 def solve(num_wizards, num_constraints, wizards, constraints):
     """
     Write your algorithm here.
@@ -125,7 +91,7 @@ def solve(num_wizards, num_constraints, wizards, constraints):
         num_constraints: Number of constraints
         wizards: An array of wizard names, in no particular order
         constraints: A 2D-array of constraints, 
-                     where constraints[0] may take the form ['A', 'B', 'C']
+                     where constraints[0] may take the form ['A', 'B', 'C']i
 
     Output:
         An array of wizard names in the ordering your algorithm returns
@@ -146,11 +112,8 @@ def solve(num_wizards, num_constraints, wizards, constraints):
             new_solution = neighborRet[0]
             changed_wiz = neighborRet[1]
             oldSolCost = oneWizCost(num_wizards, wizards, changed_wiz, solution)
-            # print oldSolCost
             newSolCost = oneWizCost(num_wizards, wizards, changed_wiz, new_solution)
-            # print newSolCost
             new_cost = (old_cost - oldSolCost) + newSolCost 
-            # print "HALP" + str(newSolCost)
             new_cost = cost(num_wizards, num_constraints, new_solution, constraints)
             ap = acceptance_probability(old_cost, new_cost, T)
 
@@ -191,42 +154,12 @@ def write_output(filename, solution):
         for wizard in solution:
             f.write("{0} ".format(wizard))
 
-def addToDict(wizDict, constraints):
-    for i in constraints:
-        wiz1 = i[0]
-        wiz2 = i[1]
-        wiz3 = i[2]
-        if wizDict.get(wiz1) == None:
-            wizDict[wiz1] = [i]
-        else:
-            wizDict[wiz1].append(i)
-        
-        if wizDict.get(wiz2) == None:
-            wizDict[wiz2] = [i]
-        else:
-            wizDict[wiz2].append(i)
-
-        if wizDict.get(wiz3) == None:
-            wizDict[wiz3] = [i]
-        else:
-            wizDict[wiz3].append(i)
-
-
-
 if __name__=="__main__":
     parser = argparse.ArgumentParser(description = "Constraint Solver.")
     parser.add_argument("input_file", type=str, help = "___.in")
     parser.add_argument("output_file", type=str, help = "___.out")
     args = parser.parse_args()
 
-
-
     num_wizards, num_constraints, wizards, constraints = read_input(args.input_file)
-
-
-
-    addToDict(conWiz, constraints)
-
-
     solution = solve(num_wizards, num_constraints, wizards, constraints)
     write_output(args.output_file, solution)
