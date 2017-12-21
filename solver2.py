@@ -7,11 +7,43 @@ from random import shuffle, sample, random
   Complete the following function.
 ======================================================================
 """
+conWiz = {}
+
 def acceptance_probability(energy, newEnergy, temperature):
     if (newEnergy < energy):
         return 1
     else:
         return math.exp((energy - newEnergy) / temperature)
+
+def oneWizCost(num_wiz_in_input, wizards, wizard, solution):
+    output_ordering = solution
+    output_ordering_set = set(output_ordering)
+    output_ordering_map = {k: v for v, k in enumerate(output_ordering)}
+
+    if (len(output_ordering_set) != len(output_ordering)):
+        return "The output ordering contains repeated wizards."
+
+    # Counts how many constraints are satisfied.
+    constraints_satisfied = 0
+    constraints_failed = []
+    wiz_constraints = conWiz[wizard]
+    for i in range(len(wiz_constraints)):
+        constraint = wiz_constraints[i]
+
+        c = constraint # Creating an alias for easy reference
+        m = output_ordering_map # Creating an alias for easy reference
+
+        wiz_a = m[c[0]]
+        wiz_b = m[c[1]]
+        wiz_mid = m[c[2]]
+
+        if (wiz_a < wiz_mid < wiz_b) or (wiz_b < wiz_mid < wiz_a):
+            constraints_failed.append(c)
+        else:
+            constraints_satisfied += 1
+
+    return num_constraints - constraints_satisfied
+
 
 def cost(num_wiz_in_input, num_constraints, wizards, constraints):
     output_ordering = wizards
@@ -49,12 +81,7 @@ def neighbor(wizards):
     randWizard = wizards[index1]
     newWiz = wizards[:index1] + wizards[index1 + 1:]
     newWiz.insert(sample(range(len(wizards)), 1)[0], randWizard)
-    return newWiz
-
-def randomWizard(wizards):
-    newWiz = wizards[:]
-    shuffle(newWiz)
-    return newWiz
+    return newWiz, randWizard
 
 def solve(num_wizards, num_constraints, wizards, constraints):
     """
@@ -73,14 +100,23 @@ def solve(num_wizards, num_constraints, wizards, constraints):
     solution = wizards
     old_cost = cost(num_wizards, num_constraints, solution, constraints)
     T = 1.0
-    T_min = 0.0001
+    T_min = 0.000001
     alpha = 0.99
     new_cost = num_wizards
 
     while T > T_min:
         i = 1
-        while i <= 100:
-            new_solution = neighbor(solution)
+        while i <= 1000:
+            
+            neighborRet = neighbor(solution)
+            new_solution = neighborRet[0]
+            changed_wiz = neighborRet[1]
+            oldSolCost = oneWizCost(num_wizards, wizards, changed_wiz, solution)
+            # print oldSolCost
+            newSolCost = oneWizCost(num_wizards, wizards, changed_wiz, new_solution)
+            # print newSolCost
+            new_cost = (old_cost - oldSolCost) + newSolCost 
+            # print "HALP" + str(newSolCost)
             new_cost = cost(num_wizards, num_constraints, new_solution, constraints)
             ap = acceptance_probability(old_cost, new_cost, T)
 
@@ -121,12 +157,42 @@ def write_output(filename, solution):
         for wizard in solution:
             f.write("{0} ".format(wizard))
 
+def addToDict(wizDict, constraints):
+    for i in constraints:
+        wiz1 = i[0]
+        wiz2 = i[1]
+        wiz3 = i[2]
+        if wizDict.get(wiz1) == None:
+            wizDict[wiz1] = [i]
+        else:
+            wizDict[wiz1].append(i)
+        
+        if wizDict.get(wiz2) == None:
+            wizDict[wiz2] = [i]
+        else:
+            wizDict[wiz2].append(i)
+
+        if wizDict.get(wiz3) == None:
+            wizDict[wiz3] = [i]
+        else:
+            wizDict[wiz3].append(i)
+
+
+
 if __name__=="__main__":
     parser = argparse.ArgumentParser(description = "Constraint Solver.")
     parser.add_argument("input_file", type=str, help = "___.in")
     parser.add_argument("output_file", type=str, help = "___.out")
     args = parser.parse_args()
 
+
+
     num_wizards, num_constraints, wizards, constraints = read_input(args.input_file)
+
+
+
+    addToDict(conWiz, constraints)
+
+
     solution = solve(num_wizards, num_constraints, wizards, constraints)
     write_output(args.output_file, solution)
